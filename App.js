@@ -8,7 +8,8 @@ import City from "./src/screens/City";
 export default function App() {
   return (
     <View style={styles.container}>
-      <City />
+      {/* <City /> */}
+      <CurrentWeather />
     </View>
   );
 }
