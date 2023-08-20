@@ -1,21 +1,64 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import CurrentWeather from "./src/screens/CurrentWeather";
-import UpcomingWeather from "./src/screens/UpcomingWeather";
-import City from "./src/screens/City";
+import { StyleSheet, View } from "react-native";
+
+import { NavigationContainer } from "@react-navigation/native";
+import Tabs from "./src/components/Tabs";
+import { ActivityIndicator } from "react-native";
+import { useState, useEffect } from "react";
+import * as Location from "expo-location";
+import { OPEN_WEATHER_API_KEY } from "@env";
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [weather, setWeather] = useState([]);
+  const [lat, setLat] = useState([]);
+  const [long, setLong] = useState([]);
+
+  const fetchWeatherData = async () => {
+    try {
+      const res = await fetch(
+        `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${OPEN_WEATHER_API_KEY} `
+      );
+      const data = await res.json();
+      setWeather(data);
+    } catch (error) {
+      setError("Could not fetch weather");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setError("permission to access location is denied");
+        return;
+      }
+      const deviceLocation = await Location.getCurrentPositionAsync({});
+      setLat(deviceLocation.coords.latitude);
+      setLong(deviceLocation.coords.longitude);
+      await fetchWeatherData();
+    })();
+  }, [lat, long]);
+
+  if (loading)
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+
   return (
-    <View style={styles.container}>
-      {/* <City /> */}
-      <CurrentWeather />
-    </View>
+    <NavigationContainer>
+      <Tabs />
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
   },
 });

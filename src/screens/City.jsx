@@ -59,7 +59,7 @@ const City = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight || 0,
+    // paddingTop: StatusBar.currentHeight || 0,
     // margintop: StatusBar.currentHeight || 0,
     backgroundColor: "lightslategrey",
   },
