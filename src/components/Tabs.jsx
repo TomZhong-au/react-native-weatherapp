@@ -14,7 +14,7 @@ const TAB_DATA = [
   { name: "City", component: City, icon: "home" },
 ];
 
-const Tabs = () => {
+const Tabs = ({ weather }) => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -33,22 +33,50 @@ const Tabs = () => {
         },
       }}
     >
-      {TAB_DATA.map(({ name, component, icon }) => (
-        <Tab.Screen
-          key={name}
-          name={name}
-          component={component}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Feather
-                name={icon}
-                size={25}
-                color={focused ? "tomato" : "black"}
-              />
-            ),
-          }}
-        />
-      ))}
+      <Tab.Screen
+        name={"Current"}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Feather
+              name={"droplet"}
+              size={25}
+              color={focused ? "tomato" : "black"}
+            />
+          ),
+        }}
+      >
+        {() => <CurrentWeather weatherData={weather.list[0]} />}
+      </Tab.Screen>
+
+      <Tab.Screen
+        name={"Upcoming"}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Feather
+              name={"clock"}
+              size={25}
+              color={focused ? "tomato" : "black"}
+            />
+          ),
+        }}
+      >
+        {() => <UpcomingWeather weatherData={weather.list} />}
+      </Tab.Screen>
+
+      <Tab.Screen
+        name={"City"}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Feather
+              name={"home"}
+              size={25}
+              color={focused ? "tomato" : "black"}
+            />
+          ),
+        }}
+      >
+        {() => <City weatherData={weather.list[0]} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
